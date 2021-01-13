@@ -1,0 +1,30 @@
+[+] Extraction tools
+
+		[+] Tools
+				steghide, exiftool, binwalk
+
+		[+] Approaches
+				If you find a file with extension error or something alone those lines, check the file signatures a.k.a magic numbers
+
+	[+] WINDOWS
+		[+] Credential Leaks
+				[1] Get a Meterpreter Shell
+				[2] load kiwi
+				[3] help						# Last Section
+
+-------------------------------------------------------------------------------------
+
+[+] Bruteforce
+
+		[+] Web based forms
+				[1] Launch Burpsuite and intercept a login attempt
+				[2] Check the Request Body and Request Type
+						[*] EXAMPLE
+							Request Body = username=abc&password=123
+							Request Type = POST /sUp3r-s3cr3t/authenticate.php HTTP/1.1
+				[3] Use them to complete the Hydra options and ATTACK!
+						
+-------------------------------------------------------------------------------------
+[+] Priv Esc
+
+If you find a command with root access, head over to https://gtfobins.github.io/

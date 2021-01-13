@@ -1,0 +1,18 @@
+[+] rip.pl 	[ RegRipper ]
+
+	[*] AmCache.hve Registry Viewer
+		rip.pl -p amcache_tln -r Amcache.hve
+
+[+] scdbg [ Shellcode Debugger ]
+
+[+] volatility
+
+[+] prefetcher
+
+[+] stegsolve
+
+[+] exiftool
+
+[+] ghidra
+	
+[+] stegcracker

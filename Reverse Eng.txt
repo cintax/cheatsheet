@@ -1,0 +1,76 @@
+[+] Disassembling the Object Code
+
+	#Intel Architecture
+	[=>] objdump -D --disassembler-options intel <Filename.o/so EXAMPLE -> sjt.o>
+
+	#ATnT Architecture
+	[=>] objdump -D --disassembler-options att <Filename.o/so EXAMPLE -> sjt.o>
+
+------------------------------------------------------------------------------
+
+[+] Extract the functions from the library
+
+	[=>] readelf -a libao.so
+
+	[=>] objdump -T libao.so
+
+------------------------------------------------------------------------------
+
+[+] Disassemble a function
+
+	[INFO] REFER THIS LINK -> https://reverseengineering.stackexchange.com/questions/2664/how-to-decompile-linux-so-library-files-from-a-ms-windows-os
+
+	[=>] objdump -d libao.so --start-address=0x3730
+
+------------------------------------------------------------------------------
+
+[+] gdb
+
+	[1] gdb <filename>			# opens a file with gdb
+	[2] set disassembly-flavor <intel/att>   # sets disassembly flavor to Intel arch or AT&T arch
+	[3] disassemble main		# disassembles starting from main method
+
+------------------------------------------------------------------------------
+
+[+] Radare2 / r2
+	
+	[1] r2 -d <filename>		# open binary in debugging mode
+	[2] aa						# analyses all symbols and entry points in the executable
+	[3] e asm.syntax=att		# set disassembly syntax to AT&T
+	[4] afl						# list of functions
+	[5] pdf @main				# print disassembly function of @main
+	[6] db <addr>				# set breakpoints
+	[7] dc						# execute the program till it hits the breakpoint
+	[8] dr 						# view values in the register 
+	[9] px <addr/register>		# view contents in the register
+	[10] ds						# go to next statement while debugging 
+
+------------------------------------------------------------------------------
+
+[+] Misc Cheatsheet
+
+	[*] Intel Arch [ Instruction -> mnemonic destination, source ]
+
+	[*] AT&T Arch [ Instruction -> mnemonic source, destination ]
+		
+		[#] $0x5 -> $ -> Immediate values are constants, and are prefixed by a $
+					  -> For instance, $0x5 represents the number 5 in hexadecimal.
+		[#] %edx -> % -> Register names are prefixed by a %
+		
+		[#] %rsp -> Top Stack Pointer
+			%rbp -> Base Stack Pointer
+
+		[#] %rsp < %rbp because the stack starts at a high memory address and grows downwards.
+
+		[#] |__64__|__56__|__48__|__40__|__32__|__24__|__16__|__8___|   AX -> General Purpose 16 bit register, low byte access x86
+			|__________________________RAX__________________________|	AH -> high byte can be accessed with the name AH (16 bit)
+			|xxxxxxxxxxxxxxxxxxxxxxxxxxx|____________EAX____________|	AL -> low byte can be accessed with the name AL	(16 bit)
+			|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx|_____AX______|	EAX -> General Purpose 32 bit register, high byte access x86
+			|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx|__AH__|__AL__|	RAX -> General Purpose 64 bit register, high byte access x64
+
+		[#] 
+-------------------------------------------------------------------------------
+
+[+] Websites
+
+	[1] https://www.recurse.com/blog/7-understanding-c-by-learning-assembly

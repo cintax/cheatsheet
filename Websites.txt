@@ -1,0 +1,25 @@
+
+[+] OSINT
+
+		[+] The Wayback Machine
+
+---------------------------------------------------------------------
+
+[+] Reverse Shell
+
+		[+] Payload Cheatsheet
+
+				[+] HighOn.Coffee
+				https://highon.coffee/blog/reverse-shell-cheat-sheet/
+
+				[+] PentestMonkey.net
+				http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet
+
+		[+] Misc
+
+				[+] Upgrading from Simple shells to Fully Interactive TTYs
+				https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/
+
+---------------------------------------------------------------------
+
+[+]
